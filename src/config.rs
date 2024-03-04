@@ -3,7 +3,8 @@
 //! Designed for command-line arguments using [`clap`], but can be used
 //! as a library too.
 
-use clap::{ArgEnum, Parser};
+use clap::Parser;
+use clap::ValueEnum;
 
 use crate::wordlists::BuiltInWordlist;
 
@@ -20,18 +21,18 @@ ctrc-w: delete last word
 #[clap(author, version, about = CLI_HELP)]
 pub struct ToipeConfig {
     /// Word list name.
-    #[clap(arg_enum, short, long, default_value_t = BuiltInWordlist::Top250)]
+    #[arg(short, long, default_value_t = BuiltInWordlist::Top250)]
     pub wordlist: BuiltInWordlist,
     /// Path to custom word list file.
     ///
     /// This argument cannot be used along with `-w`/`--wordlist`
-    #[clap(short = 'f', long = "file", conflicts_with = "wordlist")]
+    #[arg(short = 'f', long = "file", conflicts_with = "wordlist")]
     pub wordlist_file: Option<String>,
     /// Number of words to show on each test.
-    #[clap(short, long, default_value_t = 30)]
+    #[arg(short, long, default_value_t = 30)]
     pub num_words: usize,
     /// Whether to include punctuation
-    #[clap(short, long)]
+    #[arg(short, long)]
     pub punctuation: bool,
 }
 
@@ -41,7 +42,7 @@ impl ToipeConfig {
         if let Some(wordlist_file) = &self.wordlist_file {
             format!("custom file `{}`", wordlist_file)
         } else {
-            if let Some(possible_value) = self.wordlist.to_possible_value() {
+            if let Some(possible_value) = &self.wordlist.to_possible_value() {
                 possible_value.get_name()
             } else {
                 "unknown"

@@ -1,5 +1,5 @@
 use anyhow::Result;
-use clap::StructOpt;
+use clap::Parser;
 
 use std::io::stdin;
 use toipe::config::ToipeConfig;

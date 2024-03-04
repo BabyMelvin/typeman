@@ -1,5 +1,7 @@
 //! Built-in wordlists, system wordlist and utils for retrieving them.
-use clap::ArgEnum;
+use std::fmt::Display;
+
+use clap::ValueEnum;
 use include_flate::flate;
 
 flate!(static TOP_250: str          from "src/word_lists/top250");
@@ -14,7 +16,7 @@ flate!(static TOP_MISSPELLED: str   from "src/word_lists/commonly_misspelled");
 /// Word lists with top English words.
 ///
 /// See [variants](#variants) for details on each word list.
-#[derive(Copy, Clone, PartialEq, Eq, PartialOrd, Ord, ArgEnum, Debug)]
+#[derive(Copy, Clone, PartialEq, Eq, PartialOrd, Ord, ValueEnum, Debug)]
 pub enum BuiltInWordlist {
     /// Source: [wordfrequency.info](https://www.wordfrequency.info/samples.asp) (top 60K lemmas sample).
     Top250,
@@ -66,6 +68,12 @@ impl BuiltInWordlist {
             Self::CommonlyMisspelled => Some(&TOP_MISSPELLED),
             Self::OS => None,
         }
+    }
+}
+
+impl Display for BuiltInWordlist {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        self.to_possible_value().expect("no values are skipped").get_name().fmt(f)
     }
 }
 
